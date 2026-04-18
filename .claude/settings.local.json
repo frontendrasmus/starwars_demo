@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm typecheck *)",
+      "WebFetch(domain:registry.npmjs.org)",
+      "Bash(pnpm up *)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm dev:web)",
+      "Bash(echo \"PID: $!\")",
+      "Read(//private/tmp/**)",
+      "Bash(pkill -f \"vite\")"
+    ]
+  }
+}
