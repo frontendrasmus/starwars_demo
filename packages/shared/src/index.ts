@@ -14,3 +14,14 @@ export interface ModelDescriptor {
   label: string;
   provider: "anthropic" | "openai";
 }
+
+/** Identifier for a system-prompt variant. */
+export type PromptId = string;
+
+/** A prompt entry as shown in the UI prompt picker. */
+export interface PromptDescriptor {
+  id: PromptId;
+  label: string;
+  /** Short description rendered as the option's title attribute (hover tooltip). */
+  description: string;
+}

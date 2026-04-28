@@ -2,19 +2,20 @@ import { Hono } from "hono";
 import { z } from "zod";
 import type { UIMessage } from "ai";
 import { DEFAULT_MODEL_ID, isKnownModel } from "../config/models.js";
+import { DEFAULT_PROMPT_ID } from "../prompts/registry.js";
 import { runChat } from "../services/chat.js";
 
 /**
  * POST /api/chat
  *
  * Body shape is dictated by assistant-ui's AssistantChatTransport, which
- * forwards { messages, system?, tools? }. We validate loosely here — the
- * AI SDK's convertToModelMessages() does the real UIMessage validation
- * downstream, and re-asserting it in Zod would duplicate that schema.
+ * forwards { messages, system?, tools? }. We ignore `system` and `tools`
+ * on purpose — see the comment in services/chat.ts.
  *
- * Model selection rides on the `x-model-id` header rather than the body
- * because AssistantChatTransport owns the body shape. Alternative: use
- * `sendExtraMessageFields` on the transport to merge it in.
+ * Model and prompt ride on headers rather than the body because the
+ * transport controls the body shape. resolvePrompt / isKnownModel both
+ * fall back to sensible defaults for unknown IDs, so a stale client
+ * never gets an error — it just gets the default.
  */
 const BodySchema = z.object({
   messages: z.array(z.unknown()),
@@ -33,16 +34,15 @@ chatRoute.post("/", async (c) => {
     );
   }
 
-  const requested = c.req.header("x-model-id") ?? DEFAULT_MODEL_ID;
-  const modelId = isKnownModel(requested) ? requested : DEFAULT_MODEL_ID;
+  const requestedModel = c.req.header("x-model-id") ?? DEFAULT_MODEL_ID;
+  const modelId = isKnownModel(requestedModel) ? requestedModel : DEFAULT_MODEL_ID;
+  const promptId = c.req.header("x-prompt-id") ?? DEFAULT_PROMPT_ID;
 
   const result = await runChat({
     messages: parsed.data.messages as UIMessage[],
     modelId,
-    systemOverride: parsed.data.system,
+    promptId,
   });
 
-  // toUIMessageStreamResponse returns a Web Response, which Hono returns
-  // from a handler directly. No hono/streaming wrapper needed.
   return result.toUIMessageStreamResponse();
 });

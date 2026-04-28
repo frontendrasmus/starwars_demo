@@ -8,7 +8,20 @@
       "Bash(pnpm dev:web)",
       "Bash(echo \"PID: $!\")",
       "Read(//private/tmp/**)",
-      "Bash(pkill -f \"vite\")"
+      "Bash(pkill -f \"vite\")",
+      "Bash(rm -f /tmp/web-dev.log)",
+      "Bash(echo \"started pid $!\")",
+      "Bash(pkill -f \"tsx watch\")",
+      "Bash(rm -f /tmp/dev.log)",
+      "Bash(pnpm dev *)",
+      "Bash(break)",
+      "Bash(curl -s http://localhost:8080/)",
+      "Bash(curl -s http://localhost:8080/api/models)",
+      "Bash(curl -sI http://localhost:5173/)",
+      "Bash(pkill -f \"pnpm dev\")",
+      "Bash(curl -s http://localhost:8080/api/prompts)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-sonnet-4-6' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 25)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 30)"
     ]
   }
 }
