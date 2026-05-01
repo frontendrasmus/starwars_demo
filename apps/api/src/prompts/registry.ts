@@ -3,15 +3,15 @@ import type { PromptDescriptor, PromptId } from "@chat-demo/shared";
 /**
  * The library of system prompts this backend knows about.
  *
- * Each entry is a self-contained personality or task definition. The UI
- * fetches the list on mount via /api/prompts, renders a dropdown, and
- * sends the chosen ID back on every request via the x-prompt-id header.
+ * Each entry is a self-contained personality with an explicit list of
+ * tools it's allowed to call. Tools are gated *here* — if a prompt
+ * doesn't list a tool, the chat service will not pass it to the model,
+ * so the model literally can't call it. This is the architectural
+ * payoff of v3: prompts and capabilities are configured together.
  *
- * Adding a new prompt: add an entry here, nothing else. No route changes,
- * no frontend changes. That's the point — prompts are data, not code.
- *
- * Shape is deliberately flat. In v3, each entry will grow an optional
- * `tools` field naming the server-side tools it's allowed to call.
+ * Adding a new prompt: add an entry here, nothing else. No route
+ * changes, no frontend changes (other than registering renderers for
+ * any new tools, which live in the toolkit on the web side).
  */
 interface PromptEntry extends PromptDescriptor {
   /** The system prompt sent to the model. Can be multi-line. */
@@ -22,15 +22,26 @@ export const PROMPTS: PromptEntry[] = [
   {
     id: "default",
     label: "General assistant",
-    description: "The v1 baseline — a helpful, concise generalist.",
+    description: "A helpful generalist with calculator and time tools.",
+    tools: ["calculate", "getCurrentTime"],
     system: `You are a helpful assistant in a live demo.
 Be concise and direct. If you don't know something, say so plainly.
-Format code in fenced blocks. Prefer short examples over long ones.`,
+
+You have these tools available:
+  - calculate(expression): evaluate arithmetic. Use it for any math
+    the user asks about, even simple sums — never compute in your head.
+  - getCurrentTime(timezone?): get the current date and time. Use it
+    whenever the user mentions "now", "today", or asks for the time.
+
+When you call a tool, the result will be added to the conversation.
+Read it, then write a natural reply that uses the result. Don't paste
+raw JSON to the user.`,
   },
   {
     id: "sql",
     label: "SQL assistant",
-    description: "Translates natural language into SQL for a toy e-commerce schema.",
+    description: "Translates natural language into SQL. No tools.",
+    tools: [],
     system: `You are a SQL assistant for a small e-commerce database.
 
 The schema has exactly these tables:
@@ -51,7 +62,8 @@ unrelated to this database; politely redirect to the general assistant.`,
   {
     id: "coach",
     label: "Writing coach",
-    description: "Edits prose for clarity. Won't write code.",
+    description: "Edits prose for clarity. No tools.",
+    tools: [],
     system: `You are a writing coach. The user will paste a sentence,
 paragraph, or short passage. Your job:
 
@@ -67,21 +79,23 @@ If the user hasn't pasted anything to edit, ask them to.`,
 
 export const DEFAULT_PROMPT_ID: PromptId = "default";
 
-/**
- * Resolve a prompt ID to its entry. Falls back to the default prompt
- * if the ID is unknown — clients can't force an unregistered prompt,
- * but they also don't get an error if they send a stale one.
- */
 export function resolvePrompt(id: string | undefined): PromptEntry {
   if (!id) return PROMPTS[0]!;
   return PROMPTS.find((p) => p.id === id) ?? PROMPTS[0]!;
 }
 
 /**
- * The public view of the registry — descriptor fields only, no prompts.
- * We never ship the `system` text to the browser: it's backend IP, and
- * sending it would defeat the entire point of server-side prompts.
+ * The public view of the registry — descriptor fields only, no system
+ * prompts. We never ship the `system` text to the browser: it's backend
+ * IP, and sending it would defeat the entire point of server-side prompts.
+ * The `tools` list IS sent so the UI can render a hint about what's
+ * available.
  */
 export function publicPrompts(): PromptDescriptor[] {
-  return PROMPTS.map(({ id, label, description }) => ({ id, label, description }));
+  return PROMPTS.map(({ id, label, description, tools }) => ({
+    id,
+    label,
+    description,
+    tools,
+  }));
 }

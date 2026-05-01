@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type {
   ModelDescriptor,
   ModelId,
@@ -16,9 +16,6 @@ export function App() {
   const [promptId, setPromptId] = useState<PromptId | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch both registries in parallel on mount. Keeping these server-owned
-  // means the UI can never request a model or prompt the backend doesn't
-  // support — one of the small payoffs of having a backend at all.
   useEffect(() => {
     const fetchJson = <T,>(path: string) =>
       fetch(`${API_URL}${path}`).then((r) => {
@@ -40,11 +37,17 @@ export function App() {
   }, []);
 
   const ready = modelId && promptId;
+  // The currently selected prompt's tool list, used to render the
+  // header hint. Memoising keeps the renders quiet.
+  const activePromptTools = useMemo(
+    () => prompts.find((p) => p.id === promptId)?.tools ?? [],
+    [prompts, promptId],
+  );
 
   return (
     <>
       <header className="header">
-        <h1>Chat demo v2</h1>
+        <h1>Chat demo v3</h1>
         <select
           value={promptId ?? ""}
           onChange={(e) => setPromptId(e.target.value)}
@@ -70,6 +73,12 @@ export function App() {
             </option>
           ))}
         </select>
+        <span className="tools-hint">
+          tools:{" "}
+          {activePromptTools.length === 0
+            ? "(none)"
+            : activePromptTools.join(", ")}
+        </span>
       </header>
       <div className="thread-container">
         {error && <div className="status">⚠ {error}</div>}

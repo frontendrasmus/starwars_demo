@@ -21,7 +21,9 @@
       "Bash(pkill -f \"pnpm dev\")",
       "Bash(curl -s http://localhost:8080/api/prompts)",
       "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-sonnet-4-6' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 25)",
-      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 30)"
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 30)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"what is \\(12 + 3\\) * 4?\"}]}]}' --max-time 40)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: coach' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"please compute 12+3\"}]}]}' --max-time 40)"
     ]
   }
 }

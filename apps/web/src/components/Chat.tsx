@@ -3,12 +3,15 @@ import {
   ComposerPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
+  Tools,
+  useAui,
 } from "@assistant-ui/react";
 import {
   AssistantChatTransport,
   useChatRuntime,
 } from "@assistant-ui/react-ai-sdk";
 import type { ModelId, PromptId } from "@chat-demo/shared";
+import { toolkit } from "../tools/toolkit.js";
 
 interface ChatProps {
   apiUrl: string;
@@ -41,8 +44,15 @@ function ChatInner({ apiUrl, modelId, promptId }: ChatProps) {
     }),
   });
 
+  // Tools() turns our toolkit map into the format AssistantRuntimeProvider
+  // expects via the `aui` prop. Every backend tool the model might call
+  // needs a renderer here, otherwise assistant-ui falls back to a raw
+  // JSON display. Renderers for tools the current prompt can't call are
+  // harmless — they just never fire.
+  const aui = useAui({ tools: Tools({ toolkit }) });
+
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
+    <AssistantRuntimeProvider runtime={runtime} aui={aui}>
       <Thread />
     </AssistantRuntimeProvider>
   );
@@ -50,7 +60,9 @@ function ChatInner({ apiUrl, modelId, promptId }: ChatProps) {
 
 // assistant-ui 0.12 dropped the styled <Thread />; compose our own from
 // primitives. Intentionally minimal — swap for `npx assistant-ui init`
-// output if you want the Tailwind + shadcn version.
+// output if you want the Tailwind + shadcn version. Tool-call parts
+// inside MessagePrimitive.Parts are routed automatically through the
+// renderers registered above via Tools({ toolkit }).
 function Thread() {
   return (
     <ThreadPrimitive.Root className="thread-root">

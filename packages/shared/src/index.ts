@@ -24,4 +24,10 @@ export interface PromptDescriptor {
   label: string;
   /** Short description rendered as the option's title attribute (hover tooltip). */
   description: string;
+  /**
+   * Names of the server-side tools this prompt is allowed to call.
+   * Empty array = no tools. The frontend uses this to render a hint in
+   * the header; the backend uses it to filter the tools passed to the model.
+   */
+  tools: string[];
 }
