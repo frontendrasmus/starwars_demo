@@ -1,6 +1,7 @@
 import type { Tool } from "ai";
 import { calculate } from "./calculate.js";
 import { getCurrentTime } from "./get-current-time.js";
+import { searchKnowledge } from "./search-knowledge.js";
 
 /**
  * Every tool the backend can offer. Keys are the tool names the model
@@ -15,6 +16,7 @@ import { getCurrentTime } from "./get-current-time.js";
 export const TOOLS = {
   calculate,
   getCurrentTime,
+  searchKnowledge,
 } as const satisfies Record<string, Tool>;
 
 export type ToolName = keyof typeof TOOLS;

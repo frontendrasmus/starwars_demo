@@ -6,6 +6,7 @@ import type {
   PromptId,
 } from "@chat-demo/shared";
 import { Chat } from "./components/Chat.js";
+import { KnowledgePanel } from "./components/KnowledgePanel.js";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
 
@@ -37,8 +38,6 @@ export function App() {
   }, []);
 
   const ready = modelId && promptId;
-  // The currently selected prompt's tool list, used to render the
-  // header hint. Memoising keeps the renders quiet.
   const activePromptTools = useMemo(
     () => prompts.find((p) => p.id === promptId)?.tools ?? [],
     [prompts, promptId],
@@ -47,7 +46,7 @@ export function App() {
   return (
     <>
       <header className="header">
-        <h1>Chat demo v3</h1>
+        <h1>Chat demo v4</h1>
         <select
           value={promptId ?? ""}
           onChange={(e) => setPromptId(e.target.value)}
@@ -79,6 +78,7 @@ export function App() {
             ? "(none)"
             : activePromptTools.join(", ")}
         </span>
+        <KnowledgePanel apiUrl={API_URL} />
       </header>
       <div className="thread-container">
         {error && <div className="status">⚠ {error}</div>}

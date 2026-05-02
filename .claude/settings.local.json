@@ -23,7 +23,30 @@
       "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-sonnet-4-6' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 25)",
       "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: sql' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"how many orders did each customer place last month?\"}]}]}' --max-time 30)",
       "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"what is \\(12 + 3\\) * 4?\"}]}]}' --max-time 40)",
-      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: coach' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"please compute 12+3\"}]}]}' --max-time 40)"
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: openai/gpt-4o' -H 'x-prompt-id: coach' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"parts\":[{\"type\":\"text\",\"text\":\"please compute 12+3\"}]}]}' --max-time 40)",
+      "Bash(pnpm --filter api add @huggingface/transformers)",
+      "Bash(curl -s http://localhost:8080/api/knowledge)",
+      "Bash(curl -s -X POST http://localhost:8080/api/knowledge -H 'Content-Type: application/json' -d '{ *)",
+      "Bash(node -e \"const p = require\\('/Users/rasmuslundberg-ablad/repos/chat-demo-starwars/apps/api/node_modules/@huggingface/transformers/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/knowledge -H 'Content-Type: application/json' --max-time 120 -d '{ *)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(curl -sI --max-time 10 \"https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main/onnx/model_quantized.onnx\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/knowledge -H 'Content-Type: application/json' --max-time 90 -d '{\"source\":\"starwars-lore\",\"text\":\"The Force is an energy field created by all living things. It surrounds us and penetrates us; it binds the galaxy together.\\\\n\\\\nDarth Vader is the primary antagonist of the original Star Wars trilogy. He was once a Jedi Knight named Anakin Skywalker before turning to the dark side of the Force.\\\\n\\\\nThe Millennium Falcon is a modified YT-1300 light freighter piloted by Han Solo and his co-pilot Chewbacca. It made the Kessel Run in less than twelve parsecs.\"}')",
+      "Bash(pnpm --filter web dev)",
+      "Bash(echo \"Web server starting in background PID: $!\")",
+      "Bash(curl -s http://localhost:5173 -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-3-5-haiku-20241022' -H 'x-prompt-id: default' -d '{\"messages\":[{\"role\":\"user\",\"content\":\"What do you know about the Millennium Falcon?\"}]}' --max-time 30)",
+      "Bash(curl -sv -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-3-5-haiku-20241022' -H 'x-prompt-id: default' -d '{\"messages\":[{\"role\":\"user\",\"content\":\"What do you know about the Millennium Falcon?\"}]}' --max-time 30)",
+      "Bash(kill 27303 27297)",
+      "Bash(tsx watch *)",
+      "Bash(echo \"API PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-3-5-haiku-20241022' -H 'x-prompt-id: default' -d '{ *)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['id']\\) for m in data.get\\('data',[]\\)]\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-opus-4-7' -H 'x-prompt-id: default' -d '{ *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(pnpm --filter api add dotenv)"
     ]
   }
 }

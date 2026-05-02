@@ -163,3 +163,157 @@ body {
   color: rgba(128, 128, 128, 0.7);
   font-style: italic;
 }
+
+.tool-card .tool-hits {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tool-card .tool-hits li {
+  padding: 8px 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.tool-card .tool-hit-source {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tool-card .tool-hit-score {
+  margin-left: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  color: rgba(128, 128, 128, 0.8);
+}
+
+.tool-card .tool-hit-text {
+  margin-top: 4px;
+  font-size: 13px;
+  white-space: pre-wrap;
+  color: rgba(128, 128, 128, 0.95);
+}
+
+/* Knowledge panel — collapsible UI for managing the local index. */
+.knowledge-panel {
+  position: relative;
+}
+
+.knowledge-toggle {
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.knowledge-toggle:hover {
+  border-color: rgba(128, 128, 128, 0.5);
+}
+
+.knowledge-body {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  width: 380px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 14px;
+  background: Canvas;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.knowledge-note {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(128, 128, 128, 0.9);
+  line-height: 1.4;
+}
+
+.knowledge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.knowledge-empty {
+  color: rgba(128, 128, 128, 0.7);
+  font-style: italic;
+}
+
+.knowledge-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.knowledge-source {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 600;
+}
+
+.knowledge-stats {
+  font-size: 12px;
+  color: rgba(128, 128, 128, 0.8);
+}
+
+.knowledge-input,
+.knowledge-textarea {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+.knowledge-textarea {
+  resize: vertical;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.knowledge-error {
+  font-size: 12px;
+  color: rgba(220, 80, 80, 0.95);
+}
+
+.knowledge-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.knowledge-actions button {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 13px;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.knowledge-actions button:hover:not(:disabled) {
+  border-color: rgba(128, 128, 128, 0.5);
+}
+
+.knowledge-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

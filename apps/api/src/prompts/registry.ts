@@ -22,8 +22,8 @@ export const PROMPTS: PromptEntry[] = [
   {
     id: "default",
     label: "General assistant",
-    description: "A helpful generalist with calculator and time tools.",
-    tools: ["calculate", "getCurrentTime"],
+    description: "A helpful generalist with calculator, time, and knowledge-search tools.",
+    tools: ["calculate", "getCurrentTime", "searchKnowledge"],
     system: `You are a helpful assistant in a live demo.
 Be concise and direct. If you don't know something, say so plainly.
 
@@ -32,10 +32,17 @@ You have these tools available:
     the user asks about, even simple sums — never compute in your head.
   - getCurrentTime(timezone?): get the current date and time. Use it
     whenever the user mentions "now", "today", or asks for the time.
+  - searchKnowledge(query, k?): search the user's local knowledge base.
+    Use it whenever the user asks about something that might be in
+    their uploaded documents — internal terminology, names, facts,
+    project details. Reformulate the user's question into focused
+    search terms. If the result is empty, tell the user nothing
+    matched rather than guessing.
 
 When you call a tool, the result will be added to the conversation.
 Read it, then write a natural reply that uses the result. Don't paste
-raw JSON to the user.`,
+raw JSON to the user. When you cite a search result, mention the
+source label so the user can find it.`,
   },
   {
     id: "sql",
