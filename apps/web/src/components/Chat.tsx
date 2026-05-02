@@ -79,17 +79,21 @@ function Thread({
 }) {
   return (
     <ThreadPrimitive.Root className="thread-root">
+      {/*
+        Thread-level streaming indicators. Both children are gated by the
+        same ThreadPrimitive.If running primitive (see assistant-ui docs:
+        https://www.assistant-ui.com/docs/primitives). They render together
+        but live in different slots:
+          - .progress-strip → 2px gradient bar at the very top
+          - .thread-loading → orange-dot bouncer with a contextual label
+      */}
+      <ThreadPrimitive.If running>
+        <div className="progress-strip" aria-hidden />
+      </ThreadPrimitive.If>
       <ThreadPrimitive.Viewport className="thread-viewport">
         <ThreadPrimitive.Messages
           components={{ UserMessage, AssistantMessage }}
         />
-        {/*
-          Thread-level loading indicator. ThreadPrimitive.If with
-          `running` shows children only while the assistant is generating,
-          which bridges the silent gap between the "Generating…" text part
-          and the eventual file part for Draw Things — see
-          https://www.assistant-ui.com/docs/primitives
-        */}
         <ThreadPrimitive.If running>
           <div
             className={`thread-loading${isDrawThings ? " thread-loading-image" : ""}`}

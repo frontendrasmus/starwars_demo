@@ -83,7 +83,7 @@ export function App() {
   return (
     <>
       <header className="header">
-        <h1>Chat demo v4</h1>
+        <h1>Chat demo <em>v4</em></h1>
         <select
           value={promptId ?? ""}
           onChange={(e) => setPromptId(e.target.value)}

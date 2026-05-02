@@ -78,6 +78,7 @@ export function KnowledgePanel({ apiUrl }: Props) {
       </button>
       {open && (
         <div className="knowledge-body">
+          <div className="knowledge-header">Local knowledge base</div>
           <p className="knowledge-note">
             Embeddings are computed locally. Document content stays on this
             machine; only snippets the model chooses to use are sent in
