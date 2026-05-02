@@ -6,7 +6,7 @@ export type ModelId = `${string}/${string}`;
 export interface ModelDescriptor {
   id: ModelId;
   label: string;
-  provider: "anthropic" | "openai";
+  provider: "anthropic" | "openai" | "drawthings";
 }
 
 

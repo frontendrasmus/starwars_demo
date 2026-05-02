@@ -6,6 +6,7 @@ export const MODELS: ModelDescriptor[] = [
   { id: "anthropic/claude-sonnet-4-6", label: "Claude Sonnet 4.6", provider: "anthropic" },
   { id: "openai/gpt-5", label: "GPT-5", provider: "openai" },
   { id: "openai/gpt-4o", label: "GPT-4o", provider: "openai" },
+  { id: "drawthings/local", label: "Draw Things (local image gen)", provider: "drawthings" },
 ];
 
 export const DEFAULT_MODEL_ID: ModelId = "anthropic/claude-opus-4-7";

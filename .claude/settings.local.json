@@ -49,7 +49,12 @@
       "Bash(pnpm --filter api add dotenv)",
       "Bash(kill 14845)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(xargs kill *)"
+      "Bash(xargs kill *)",
+      "Bash(pnpm -r typecheck)",
+      "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+react@0.12.25*/node_modules/@assistant-ui/react/dist -name \"*.d.ts\")",
+      "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+core*/node_modules/@assistant-ui/core/dist -name \"*If*.d.ts\" -o -name \"*Aui*.d.ts\")",
+      "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+react@0.12.25*/node_modules/@assistant-ui/react/dist/primitives/message -name \"*.d.ts\")",
+      "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+core*/node_modules/@assistant-ui/core/dist/react/primitives -name \"Thread*If*\" -o -name \"MessageParts*\")"
     ]
   }
 }

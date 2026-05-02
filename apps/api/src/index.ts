@@ -9,6 +9,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { chatRoute } from "./routes/chat.js";
 import { knowledgeRoute } from "./routes/knowledge.js";
+import { healthRoute } from "./routes/health.js";
 import { MODELS } from "./config/models.js";
 import { publicPrompts } from "./prompts/registry.js";
 
@@ -21,7 +22,14 @@ app.use(
     origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
 
 
-    allowHeaders: ["Content-Type", "x-model-id", "x-prompt-id"],
+    allowHeaders: [
+      "Content-Type",
+      "x-model-id",
+      "x-prompt-id",
+      "x-drawthings-steps",
+      "x-drawthings-width",
+      "x-drawthings-height",
+    ],
   }),
 );
 
@@ -33,6 +41,7 @@ app.get("/api/prompts", (c) => c.json({ prompts: publicPrompts() }));
 
 app.route("/api/chat", chatRoute);
 app.route("/api/knowledge", knowledgeRoute);
+app.route("/api/health", healthRoute);
 
 const port = Number(process.env.PORT ?? 8080);
 serve({ fetch: app.fetch, port }, (info) => {

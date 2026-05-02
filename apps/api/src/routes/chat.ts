@@ -27,11 +27,28 @@ chatRoute.post("/", async (c) => {
   const modelId = isKnownModel(requestedModel) ? requestedModel : DEFAULT_MODEL_ID;
   const promptId = c.req.header("x-prompt-id") ?? DEFAULT_PROMPT_ID;
 
-  const result = await runChat({
+  // Optional Draw Things knobs forwarded from the UI sub-toolbar.
+  // Missing/invalid headers fall through to provider defaults.
+  const drawSettings = parseDrawSettings(c.req);
+
+  return await runChat({
     messages: parsed.data.messages as UIMessage[],
     modelId,
     promptId,
+    drawSettings,
   });
-
-  return result.toUIMessageStreamResponse();
 });
+
+function parseDrawSettings(req: { header: (n: string) => string | undefined }) {
+  const num = (h: string) => {
+    const v = req.header(h);
+    if (v === undefined) return undefined;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : undefined;
+  };
+  return {
+    steps: num("x-drawthings-steps"),
+    width: num("x-drawthings-width"),
+    height: num("x-drawthings-height"),
+  };
+}
