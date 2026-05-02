@@ -93,6 +93,15 @@ em { font-style: italic; color: var(--accent); }
   color: var(--accent);
 }
 
+.header-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-right: -6px;
+}
+
 .header select {
   padding: 7px 12px;
   font-family: var(--mono);
@@ -122,7 +131,7 @@ em { font-style: italic; color: var(--accent); }
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink);
 }
 
 /* =========================================================
@@ -216,9 +225,6 @@ em { font-style: italic; color: var(--accent); }
   background: var(--surface);
   border-color: var(--line);
   color: var(--ink);
-  font-family: var(--serif);
-  font-size: 18px;
-  line-height: 1.45;
 }
 
 @keyframes rise {
@@ -623,7 +629,7 @@ em { font-style: italic; color: var(--accent); }
   border: 1px solid var(--line-2);
   border-radius: var(--r-sm);
   cursor: pointer;
-  color: var(--ink-2);
+  color: var(--ink);
   transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 

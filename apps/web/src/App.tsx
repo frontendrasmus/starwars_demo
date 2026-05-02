@@ -84,12 +84,17 @@ export function App() {
     <>
       <header className="header">
         <h1>Chat demo <em>v4</em></h1>
+        <span className="header-label">Assistant:</span>
         <select
           value={promptId ?? ""}
           onChange={(e) => setPromptId(e.target.value)}
-          disabled={prompts.length === 0}
+          disabled={prompts.length === 0 || isDrawThings}
           aria-label="Select prompt"
-          title={prompts.find((p) => p.id === promptId)?.description}
+          title={
+            isDrawThings
+              ? "Assistant prompts don't apply to Draw Things — its output is an image."
+              : prompts.find((p) => p.id === promptId)?.description
+          }
         >
           {prompts.map((p) => (
             <option key={p.id} value={p.id} title={p.description}>
@@ -97,6 +102,7 @@ export function App() {
             </option>
           ))}
         </select>
+        <span className="header-label">Model:</span>
         <select
           value={modelId ?? ""}
           onChange={(e) => setModelId(e.target.value as ModelId)}
