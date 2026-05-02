@@ -1,15 +1,7 @@
 import { tool } from "ai";
 import { z } from "zod";
 
-/**
- * The set of characters allowed in a math expression. Restricting input
- * before passing to Function() defends against arbitrary code execution —
- * the model has tried to call .toString().constructor(...) and similar
- * tricks in the wild before, so this regex is non-negotiable in production.
- *
- * For a real product, prefer a dedicated parser like mathjs. We use
- * Function() here so the demo has zero dependencies for this tool.
- */
+
 const SAFE_EXPRESSION = /^[\d+\-*/().\s]+$/;
 
 export const calculate = tool({

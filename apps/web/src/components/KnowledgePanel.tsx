@@ -10,14 +10,6 @@ interface Props {
   apiUrl: string;
 }
 
-/**
- * A small panel that hangs off the header. Lets the user paste in some
- * text under a source label, which the backend chunks + embeds locally.
- *
- * No file upload widget for v4 — paste-in is enough to demo the flow,
- * and avoids the multipart parsing detour. Hooking up real file upload
- * is a one-line aside on stage and ~20 lines of backend code.
- */
 export function KnowledgePanel({ apiUrl }: Props) {
   const [sources, setSources] = useState<KnowledgeSummary[]>([]);
   const [open, setOpen] = useState(false);

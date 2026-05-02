@@ -19,16 +19,7 @@ interface ChatProps {
   promptId: PromptId;
 }
 
-/**
- * Wrapper that remounts the inner component when modelId OR promptId
- * changes. The transport is constructed once inside useChatRuntime, so
- * new header values wouldn't take effect on in-flight or queued requests.
- *
- * Remounting on prompt change is arguably stronger behaviour than remounting
- * on model change: switching from "SQL assistant" to "writing coach"
- * mid-thread would produce bizarre, confused replies. Fresh thread per
- * persona is the right default. Thread persistence comes in v5.
- */
+
 export function Chat(props: ChatProps) {
   return <ChatInner key={`${props.modelId}::${props.promptId}`} {...props} />;
 }
@@ -44,11 +35,7 @@ function ChatInner({ apiUrl, modelId, promptId }: ChatProps) {
     }),
   });
 
-  // Tools() turns our toolkit map into the format AssistantRuntimeProvider
-  // expects via the `aui` prop. Every backend tool the model might call
-  // needs a renderer here, otherwise assistant-ui falls back to a raw
-  // JSON display. Renderers for tools the current prompt can't call are
-  // harmless — they just never fire.
+
   const aui = useAui({ tools: Tools({ toolkit }) });
 
   return (
@@ -58,11 +45,7 @@ function ChatInner({ apiUrl, modelId, promptId }: ChatProps) {
   );
 }
 
-// assistant-ui 0.12 dropped the styled <Thread />; compose our own from
-// primitives. Intentionally minimal — swap for `npx assistant-ui init`
-// output if you want the Tailwind + shadcn version. Tool-call parts
-// inside MessagePrimitive.Parts are routed automatically through the
-// renderers registered above via Tools({ toolkit }).
+
 function Thread() {
   return (
     <ThreadPrimitive.Root className="thread-root">

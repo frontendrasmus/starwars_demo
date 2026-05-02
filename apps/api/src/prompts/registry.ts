@@ -1,20 +1,8 @@
 import type { PromptDescriptor, PromptId } from "@chat-demo/shared";
 
-/**
- * The library of system prompts this backend knows about.
- *
- * Each entry is a self-contained personality with an explicit list of
- * tools it's allowed to call. Tools are gated *here* — if a prompt
- * doesn't list a tool, the chat service will not pass it to the model,
- * so the model literally can't call it. This is the architectural
- * payoff of v3: prompts and capabilities are configured together.
- *
- * Adding a new prompt: add an entry here, nothing else. No route
- * changes, no frontend changes (other than registering renderers for
- * any new tools, which live in the toolkit on the web side).
- */
+
 interface PromptEntry extends PromptDescriptor {
-  /** The system prompt sent to the model. Can be multi-line. */
+
   system: string;
 }
 
@@ -91,13 +79,7 @@ export function resolvePrompt(id: string | undefined): PromptEntry {
   return PROMPTS.find((p) => p.id === id) ?? PROMPTS[0]!;
 }
 
-/**
- * The public view of the registry — descriptor fields only, no system
- * prompts. We never ship the `system` text to the browser: it's backend
- * IP, and sending it would defeat the entire point of server-side prompts.
- * The `tools` list IS sent so the UI can render a hint about what's
- * available.
- */
+
 export function publicPrompts(): PromptDescriptor[] {
   return PROMPTS.map(({ id, label, description, tools }) => ({
     id,

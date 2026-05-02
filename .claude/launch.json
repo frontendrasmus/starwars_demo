@@ -1,0 +1,28 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "API (Hono · :8080)",
+      "cwd": "apps/api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "port": 8080,
+      "autoPort": false
+    },
+    {
+      "name": "Web (Vite · :5173)",
+      "cwd": "apps/web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "port": 5173,
+      "autoPort": false
+    },
+    {
+      "name": "All (monorepo parallel)",
+      "cwd": ".",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "port": 5173
+    }
+  ]
+}

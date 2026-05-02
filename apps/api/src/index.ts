@@ -1,5 +1,5 @@
-// Force-load .env so that system-level empty env vars (e.g. ANTHROPIC_API_KEY="")
-// don't shadow the values we actually want. Must be the very first import.
+
+
 import { config as dotenvConfig } from "dotenv";
 dotenvConfig({ override: true });
 
@@ -19,17 +19,15 @@ app.use(
   "*",
   cors({
     origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
-    // Our custom selection headers must be allowed explicitly, or the
-    // browser blocks the preflight.
+
+
     allowHeaders: ["Content-Type", "x-model-id", "x-prompt-id"],
   }),
 );
 
 app.get("/", (c) => c.text("chat-demo-v4 api · POST /api/chat to talk"));
 
-// Both registries are exposed over HTTP so the UI can render pickers
-// from a single source of truth. Note that publicPrompts() strips the
-// actual prompt text — the browser gets labels and descriptions only.
+
 app.get("/api/models", (c) => c.json({ models: MODELS }));
 app.get("/api/prompts", (c) => c.json({ prompts: publicPrompts() }));
 

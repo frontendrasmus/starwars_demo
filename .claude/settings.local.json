@@ -46,7 +46,10 @@
       "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['id']\\) for m in data.get\\('data',[]\\)]\")",
       "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: anthropic/claude-opus-4-7' -H 'x-prompt-id: default' -d '{ *)",
       "Bash(grep -v \"^$\")",
-      "Bash(pnpm --filter api add dotenv)"
+      "Bash(pnpm --filter api add dotenv)",
+      "Bash(kill 14845)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(xargs kill *)"
     ]
   }
 }

@@ -1,18 +1,5 @@
 import type { Toolkit } from "@assistant-ui/react";
 
-/**
- * Frontend renderers for backend-defined tools.
- *
- * Each key here MUST match the tool name used by the backend in
- * apps/api/src/tools/index.ts and on the model side. If the names
- * disagree, the result will fall through to assistant-ui's default
- * tool fallback (raw JSON in a box) — useful as a debugging signal.
- *
- * Result shapes mirror what the tool's `execute` returns. Because the
- * tools return discriminated unions ({ ok: true, ... } | { ok: false,
- * error }), each renderer branches on `result.ok` and shows either the
- * value or the error.
- */
 
 type CalculateResult =
   | { ok: true; expression: string; value: number }
@@ -29,9 +16,7 @@ type SearchKnowledgeResult = {
   message?: string;
 };
 
-// Inline SVG icons — Lucide-style 14px stroke icons drawn with
-// currentColor, so they pick up whatever `.tool-name` sets. No icon
-// library dependency.
+
 function ClockIcon() {
   return (
     <svg

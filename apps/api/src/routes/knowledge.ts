@@ -6,19 +6,6 @@ import {
   listSources,
 } from "../knowledge/store.js";
 
-/**
- * Routes for managing the local knowledge base.
- *
- *   GET  /api/knowledge        — list sources currently indexed
- *   POST /api/knowledge        — { source, text } → chunks + indexes
- *   DELETE /api/knowledge      — wipe the store
- *
- * Note this is text-only for v4. To support file uploads, accept
- * multipart/form-data here, parse with whatever extractor you like
- * (mammoth for .docx, pdf-parse for .pdf, plain readFile for .md /
- * .txt), and pass the extracted text to addDocument(). The store
- * doesn't care where the text came from.
- */
 
 const PostBody = z.object({
   source: z
