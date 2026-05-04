@@ -5,3 +5,4 @@ dist
 .turbo
 .DS_Store
 *.log
+apps/api/data/

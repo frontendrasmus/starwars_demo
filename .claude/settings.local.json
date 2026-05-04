@@ -55,7 +55,9 @@
       "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+core*/node_modules/@assistant-ui/core/dist -name \"*If*.d.ts\" -o -name \"*Aui*.d.ts\")",
       "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+react@0.12.25*/node_modules/@assistant-ui/react/dist/primitives/message -name \"*.d.ts\")",
       "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+core*/node_modules/@assistant-ui/core/dist/react/primitives -name \"Thread*If*\" -o -name \"MessageParts*\")",
-      "Bash(pnpm --filter web typecheck)"
+      "Bash(pnpm --filter web typecheck)",
+      "Bash(curl -s http://localhost:8080/api/threads -w \"\\\\n[api %{http_code}]\\\\n\")",
+      "Bash(curl -s -o /dev/null -w \"[web %{http_code}]\\\\n\" http://localhost:5173/)"
     ]
   }
 }

@@ -12,6 +12,7 @@ import { resolveModel } from "../providers/index.js";
 import { generateImage } from "../providers/drawthings.js";
 import { resolvePrompt } from "../prompts/registry.js";
 import { selectTools } from "../tools/index.js";
+import { appendMessage } from "../threads/store.js";
 
 export interface DrawThingsOpts {
   steps?: number;
@@ -24,6 +25,12 @@ export interface RunChatInput {
   modelId: ModelId;
   promptId: PromptId;
   drawSettings?: DrawThingsOpts;
+  /**
+   * If present, the assistant's response message is persisted to this
+   * thread when the stream finishes. Caller is responsible for the user
+   * message — see routes/chat.ts → persistLatestUserMessage.
+   */
+  threadId?: string;
 }
 
 /**
@@ -39,7 +46,12 @@ export async function runChat(input: RunChatInput): Promise<Response> {
   return runTextChat(input);
 }
 
-async function runTextChat({ messages, modelId, promptId }: RunChatInput): Promise<Response> {
+async function runTextChat({
+  messages,
+  modelId,
+  promptId,
+  threadId,
+}: RunChatInput): Promise<Response> {
   const model = resolveModel(modelId);
   const prompt = resolvePrompt(promptId);
   const tools = selectTools(prompt.tools);
@@ -52,7 +64,13 @@ async function runTextChat({ messages, modelId, promptId }: RunChatInput): Promi
     tools,
     stopWhen: stepCountIs(5),
   });
-  return result.toUIMessageStreamResponse();
+
+  return result.toUIMessageStreamResponse({
+    originalMessages: threadId ? messages : undefined,
+    onFinish: threadId
+      ? ({ responseMessage }) => persistAssistant(threadId, responseMessage)
+      : undefined,
+  });
 }
 
 /** Pull the most recent user-message text out of the UIMessage history. */
@@ -62,7 +80,10 @@ function lastUserText(messages: UIMessage[]): string {
   const parts = (last as { parts?: Array<{ type: string; text?: string }> }).parts;
   if (!parts) return "";
   return parts
-    .filter((p): p is { type: "text"; text: string } => p.type === "text" && typeof p.text === "string")
+    .filter(
+      (p): p is { type: "text"; text: string } =>
+        p.type === "text" && typeof p.text === "string",
+    )
     .map((p) => p.text)
     .join("\n")
     .trim();
@@ -73,10 +94,15 @@ function lastUserText(messages: UIMessage[]): string {
  * stream by hand: a status text part while the model thinks, then a
  * file part with the resulting image as a data URL.
  */
-async function runImageChat({ messages, drawSettings }: RunChatInput): Promise<Response> {
+async function runImageChat({
+  messages,
+  drawSettings,
+  threadId,
+}: RunChatInput): Promise<Response> {
   const prompt = lastUserText(messages);
 
   const stream = createUIMessageStream({
+    originalMessages: threadId ? messages : undefined,
     execute: async ({ writer }) => {
       if (!prompt) {
         const id = generateId();
@@ -119,7 +145,24 @@ async function runImageChat({ messages, drawSettings }: RunChatInput): Promise<R
         writer.write({ type: "text-end", id: errId });
       }
     },
+    onFinish: threadId
+      ? ({ responseMessage }) => persistAssistant(threadId, responseMessage)
+      : undefined,
   });
 
   return createUIMessageStreamResponse({ stream });
+}
+
+/** Persist whatever the assistant produced (text + tool calls + files). */
+function persistAssistant(threadId: string, msg: UIMessage): void {
+  appendMessage({
+    // Fall back to a fresh id — the AI SDK occasionally returns "" when
+    // we don't pre-seed message ids (which we don't, since assistant-ui
+    // owns id generation in the real client).
+    id: msg.id || generateId(),
+    threadId,
+    role: "assistant",
+    parts: msg.parts ?? [],
+    createdAt: Date.now(),
+  });
 }

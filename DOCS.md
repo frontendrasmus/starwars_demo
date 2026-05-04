@@ -315,6 +315,27 @@ Collapsible panel in the header. Fetches `GET /api/knowledge` on mount and after
 
 Paste-in only (no file `<input>`) for v4. The component notes that real file upload is a ~20-line backend addition.
 
+curl http://localhost:8080/api/knowledge
+# → {"sources":[{"source":"starwars-lore","chunkCount":2,"totalChars":546}]}
+How to add new documents
+In the browser — Knowledge panel → type a label → paste text → click Index.
+
+Via curl (great for indexing whole files):
+
+# Paste any text
+curl -X POST http://localhost:8080/api/knowledge \
+  -H "Content-Type: application/json" \
+  -d '{"source":"my-doc","text":"..."}'
+
+# Index a local .txt / .md file directly
+curl -X POST http://localhost:8080/api/knowledge \
+  -H "Content-Type: application/json" \
+  -d "{\"source\":\"rebels.md\",\"text\":$(jq -Rs . < ~/Downloads/rebels.md)}"
+
+curl -X POST http://localhost:8080/api/knowledge \
+  -H "Content-Type: application/json" \
+  -d "$(jq -Rs '{source: "rebels.md", text: .}' < rebels.md)"
+
 ### Tool Renderers (Toolkit)
 
 **`apps/web/src/tools/toolkit.tsx`**

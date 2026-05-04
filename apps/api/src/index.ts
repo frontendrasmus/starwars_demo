@@ -1,5 +1,3 @@
-
-
 import { config as dotenvConfig } from "dotenv";
 dotenvConfig({ override: true });
 
@@ -10,6 +8,8 @@ import { logger } from "hono/logger";
 import { chatRoute } from "./routes/chat.js";
 import { knowledgeRoute } from "./routes/knowledge.js";
 import { healthRoute } from "./routes/health.js";
+import { threadsRoute } from "./routes/threads.js";
+import { loadFromDisk } from "./threads/persistence.js";
 import { MODELS } from "./config/models.js";
 import { publicPrompts } from "./prompts/registry.js";
 
@@ -20,12 +20,11 @@ app.use(
   "*",
   cors({
     origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
-
-
     allowHeaders: [
       "Content-Type",
       "x-model-id",
       "x-prompt-id",
+      "x-thread-id",
       "x-drawthings-steps",
       "x-drawthings-width",
       "x-drawthings-height",
@@ -35,13 +34,16 @@ app.use(
 
 app.get("/", (c) => c.text("chat-demo-v4 api · POST /api/chat to talk"));
 
-
 app.get("/api/models", (c) => c.json({ models: MODELS }));
 app.get("/api/prompts", (c) => c.json({ prompts: publicPrompts() }));
 
 app.route("/api/chat", chatRoute);
 app.route("/api/knowledge", knowledgeRoute);
 app.route("/api/health", healthRoute);
+app.route("/api/threads", threadsRoute);
+
+// Boot: hydrate the thread store from disk before accepting traffic.
+await loadFromDisk();
 
 const port = Number(process.env.PORT ?? 8080);
 serve({ fetch: app.fetch, port }, (info) => {
