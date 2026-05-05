@@ -13,12 +13,18 @@ import {
 } from "@assistant-ui/react-ai-sdk";
 import type { UIMessage } from "ai";
 import type {
+  AttractionsData,
+  BrochureData,
+  CostsData,
   ModelId,
   PersistedMessage,
   PromptId,
   ThreadDescriptor,
 } from "@chat-demo/shared";
 import { toolkit } from "../tools/toolkit.js";
+import { AttractionsCard } from "./AttractionsCard.js";
+import { BrochureCard } from "./BrochureCard.js";
+import { CostsCard } from "./CostsCard.js";
 
 export interface DrawThingsSettings {
   steps: number;
@@ -49,6 +55,13 @@ interface ChatProps {
   initialMessages: PersistedMessage[];
   /** Fires the first time this Chat instance auto-creates a thread. */
   onThreadCreated?: (thread: ThreadDescriptor) => void;
+  /**
+   * Intro message displayed inside the empty thread (e.g. for special
+   * workflow prompts). Disappears as soon as any real message arrives,
+   * via assistant-ui's <ThreadPrimitive.If empty>. Never sent to the
+   * model.
+   */
+  welcomeMessage?: string;
 }
 
 export function Chat(props: ChatProps) {
@@ -69,6 +82,7 @@ function ChatInner({
   initialThreadId,
   initialMessages,
   onThreadCreated,
+  welcomeMessage,
 }: ChatProps) {
   const isDrawThings = modelId.startsWith("drawthings/");
 
@@ -126,7 +140,11 @@ function ChatInner({
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui}>
-      <Thread modelError={modelError} isDrawThings={isDrawThings} />
+      <Thread
+        modelError={modelError}
+        isDrawThings={isDrawThings}
+        welcomeMessage={welcomeMessage}
+      />
     </AssistantRuntimeProvider>
   );
 }
@@ -134,9 +152,11 @@ function ChatInner({
 function Thread({
   modelError,
   isDrawThings,
+  welcomeMessage,
 }: {
   modelError?: string | null;
   isDrawThings: boolean;
+  welcomeMessage?: string;
 }) {
   return (
     <ThreadPrimitive.Root className="thread-root">
@@ -144,6 +164,14 @@ function Thread({
         <div className="progress-strip" aria-hidden />
       </ThreadPrimitive.If>
       <ThreadPrimitive.Viewport className="thread-viewport">
+        {welcomeMessage && (
+          <ThreadPrimitive.If empty>
+            <div className="welcome-message" aria-label="Prompt instructions">
+              <span className="welcome-kicker">Intro</span>
+              <p>{welcomeMessage}</p>
+            </div>
+          </ThreadPrimitive.If>
+        )}
         <ThreadPrimitive.Messages
           components={{ UserMessage, AssistantMessage }}
         />
@@ -206,7 +234,26 @@ function FilePart(props: {
 function UserMessage() {
   return (
     <MessagePrimitive.Root className="message message-user">
-      <MessagePrimitive.Parts components={{ File: FilePart }} />
+      <MessagePrimitive.Parts
+        components={{
+          File: FilePart,
+          data: {
+            by_name: {
+              // Each `data-<name>` part type maps to a custom widget.
+              // Adding more rich widgets later is just another by_name entry.
+              brochure: ({ data }: { data: BrochureData }) => (
+                <BrochureCard data={data} />
+              ),
+              attractions: ({ data }: { data: AttractionsData }) => (
+                <AttractionsCard data={data} />
+              ),
+              costs: ({ data }: { data: CostsData }) => (
+                <CostsCard data={data} />
+              ),
+            },
+          },
+        }}
+      />
     </MessagePrimitive.Root>
   );
 }
@@ -214,7 +261,26 @@ function UserMessage() {
 function AssistantMessage() {
   return (
     <MessagePrimitive.Root className="message message-assistant">
-      <MessagePrimitive.Parts components={{ File: FilePart }} />
+      <MessagePrimitive.Parts
+        components={{
+          File: FilePart,
+          data: {
+            by_name: {
+              // Each `data-<name>` part type maps to a custom widget.
+              // Adding more rich widgets later is just another by_name entry.
+              brochure: ({ data }: { data: BrochureData }) => (
+                <BrochureCard data={data} />
+              ),
+              attractions: ({ data }: { data: AttractionsData }) => (
+                <AttractionsCard data={data} />
+              ),
+              costs: ({ data }: { data: CostsData }) => (
+                <CostsCard data={data} />
+              ),
+            },
+          },
+        }}
+      />
     </MessagePrimitive.Root>
   );
 }

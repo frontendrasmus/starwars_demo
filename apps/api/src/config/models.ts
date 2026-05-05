@@ -7,6 +7,8 @@ export const MODELS: ModelDescriptor[] = [
   { id: "openai/gpt-5", label: "GPT-5", provider: "openai" },
   { id: "openai/gpt-4o", label: "GPT-4o", provider: "openai" },
   { id: "drawthings/local", label: "Draw Things (local image gen)", provider: "drawthings" },
+  { id: "ollama/llama3.2:3b", label: "Llama 3.2 3B (local · Ollama)", provider: "ollama" },
+  { id: "ollama/gemma4:latest", label: "Gemma 4 (local · Ollama)", provider: "ollama" },
 ];
 
 export const DEFAULT_MODEL_ID: ModelId = "anthropic/claude-opus-4-7";

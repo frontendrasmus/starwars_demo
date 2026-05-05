@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ModelDescriptor,
   ModelId,
@@ -61,20 +61,48 @@ export function App() {
       );
   }, []);
 
-  // Draw Things liveness probe on model change.
+  // Drawthings is fundamentally not a chat model — pair it with the
+  // dedicated "image" prompt so the workflow / system-prompt selected
+  // for a text model (e.g. brochure, SQL, coach) doesn't leak into the
+  // image-gen path. We remember the previous selection in a ref so it's
+  // restored when the user switches back to a text model.
+  const previousTextPromptId = useRef<PromptId | null>(null);
+  useEffect(() => {
+    if (!modelId || !promptId) return;
+    const isImageModel = modelId.startsWith("drawthings/");
+
+    if (isImageModel && promptId !== "image") {
+      previousTextPromptId.current = promptId;
+      setPromptId("image");
+    } else if (!isImageModel && promptId === "image") {
+      // Coming back to a text model — restore whatever the user had
+      // before, or fall back to "default".
+      setPromptId(previousTextPromptId.current ?? "default");
+      previousTextPromptId.current = null;
+    }
+  }, [modelId, promptId]);
+
+  // Liveness probe for local-process providers (drawthings, ollama).
+  // Cloud providers (anthropic, openai) are assumed reachable.
   useEffect(() => {
     if (!modelId) return;
-    if (modelId.split("/")[0] !== "drawthings") {
+    const provider = modelId.split("/")[0];
+    const localProviders: Record<string, string> = {
+      drawthings: "drawthings",
+      ollama: "ollama",
+    };
+    const healthPath = localProviders[provider];
+    if (!healthPath) {
       setModelHealthError(null);
       return;
     }
     let cancelled = false;
-    fetch(`${API_URL}/api/health/drawthings`)
+    fetch(`${API_URL}/api/health/${healthPath}`)
       .then((r) => r.json() as Promise<{ ok: boolean; error?: string }>)
       .then((data) => {
         if (cancelled) return;
         setModelHealthError(
-          data.ok ? null : data.error ?? "Draw Things is unreachable.",
+          data.ok ? null : data.error ?? `${provider} is unreachable.`,
         );
       })
       .catch((err) => {
@@ -144,9 +172,18 @@ export function App() {
 
   const ready = modelId && promptId;
   const isDrawThings = modelId?.startsWith("drawthings/") ?? false;
-  const activePromptTools = useMemo(
-    () => prompts.find((p) => p.id === promptId)?.tools ?? [],
+  const activePrompt = useMemo(
+    () => prompts.find((p) => p.id === promptId),
     [prompts, promptId],
+  );
+  const activePromptTools = activePrompt?.tools ?? [];
+  // Drawthings only sees the "image" prompt; text models hide it.
+  const visiblePrompts = useMemo(
+    () =>
+      prompts.filter((p) =>
+        isDrawThings ? p.id === "image" : p.id !== "image",
+      ),
+    [prompts, isDrawThings],
   );
 
   return (
@@ -157,15 +194,11 @@ export function App() {
         <select
           value={promptId ?? ""}
           onChange={(e) => setPromptId(e.target.value)}
-          disabled={prompts.length === 0 || isDrawThings}
+          disabled={visiblePrompts.length <= 1}
           aria-label="Select prompt"
-          title={
-            isDrawThings
-              ? "Assistant prompts don't apply to Draw Things — its output is an image."
-              : prompts.find((p) => p.id === promptId)?.description
-          }
+          title={activePrompt?.description}
         >
-          {prompts.map((p) => (
+          {visiblePrompts.map((p) => (
             <option key={p.id} value={p.id} title={p.description}>
               {p.label}
             </option>
@@ -220,6 +253,7 @@ export function App() {
               initialThreadId={activeThreadId}
               initialMessages={initialMessages}
               onThreadCreated={onThreadCreated}
+              welcomeMessage={activePrompt?.welcomeMessage}
             />
           )}
         </div>

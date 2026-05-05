@@ -57,7 +57,25 @@
       "Bash(find /Users/rasmuslundberg-ablad/repos/chat-demo-starwars/node_modules/.pnpm/@assistant-ui+core*/node_modules/@assistant-ui/core/dist/react/primitives -name \"Thread*If*\" -o -name \"MessageParts*\")",
       "Bash(pnpm --filter web typecheck)",
       "Bash(curl -s http://localhost:8080/api/threads -w \"\\\\n[api %{http_code}]\\\\n\")",
-      "Bash(curl -s -o /dev/null -w \"[web %{http_code}]\\\\n\" http://localhost:5173/)"
+      "Bash(curl -s -o /dev/null -w \"[web %{http_code}]\\\\n\" http://localhost:5173/)",
+      "Bash(curl -s http://localhost:11434/api/tags)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(m['name']\\) for m in d.get\\('models', []\\)]\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/llama3.2:3b' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"Say hi in 3 words.\",\"parts\":[{\"type\":\"text\",\"text\":\"Say hi in 3 words.\"}]}]}' --max-time 30)",
+      "Bash(python3 -c \"import sys,json; [print\\(m['name']\\) for m in json.load\\(sys.stdin\\).get\\('models', []\\)]\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/gemma4:latest' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"Say hi in 3 words.\",\"parts\":[{\"type\":\"text\",\"text\":\"Say hi in 3 words.\"}]}]}' --max-time 30)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/gemma4:latest' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"Say hi in 3 words.\",\"parts\":[{\"type\":\"text\",\"text\":\"Say hi in 3 words.\"}]}]}' --max-time 60)",
+      "Bash(curl -s -X POST http://localhost:11434/v1/chat/completions -H 'Content-Type: application/json' -d '{\"model\":\"gemma4:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hi in 3 words.\"}],\"stream\":false}' --max-time 60)",
+      "Bash(curl -sv -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/gemma4:latest' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"Hi\",\"parts\":[{\"type\":\"text\",\"text\":\"Hi\"}]}]}' --max-time 30)",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/gemma4:latest' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"hi\",\"parts\":[{\"type\":\"text\",\"text\":\"hi\"}]}]}' --max-time 90 -i)",
+      "Bash(curl -s http://localhost:8080/api/models -o /dev/null -w \"[api %{http_code}]\\\\n\")",
+      "Bash(curl -s -X POST http://localhost:11434/v1/chat/completions -H 'Content-Type: application/json' -d '{\"model\":\"gemma4:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"stream\":true}' --max-time 30)",
+      "Bash(kill 14006)",
+      "Bash(curl -s http://localhost:8080/api/models -w \"\\\\n[%{http_code}]\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: ollama/gemma4:latest' -H 'x-prompt-id: default' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"hi\",\"parts\":[{\"type\":\"text\",\"text\":\"hi\"}]}]}' --max-time 120 -w '\\\\n[%{http_code} time:%{time_total}s]\\\\n')",
+      "Bash(pnpm --filter api typecheck)",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\(json.dumps\\({'type':d.get\\('type'\\),'title':d.get\\('title'\\),'originalimage':d.get\\('originalimage'\\)},indent=2\\)\\)\")",
+      "Bash(python3 -c \"import sys,json;[print\\(f\\\\\"  {p['id']:<10} {p['label']}\\\\\"\\) for p in json.load\\(sys.stdin\\)['prompts']]\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/chat -H 'Content-Type: application/json' -H 'x-model-id: drawthings/local' -H 'x-prompt-id: image' -d '{\"messages\":[{\"id\":\"u1\",\"role\":\"user\",\"content\":\"a tiny owl\",\"parts\":[{\"type\":\"text\",\"text\":\"a tiny owl\"}]}]}' --max-time 5)"
     ]
   }
 }

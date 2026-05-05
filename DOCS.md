@@ -170,6 +170,29 @@ export function selectTools(allowed: readonly string[]): Record<string, Tool> {
   // Only keys present in `allowed` are returned — the model never sees
   // tools it hasn't been granted.
 }
+ // exmaple what the model seets
+{
+  "model": "claude-opus-4-7",
+  "system": "You are a helpful assistant in a live demo...",
+  "messages": [...],
+  "tools": [
+    {
+      "name": "calculate",
+      "description": "Evaluate a basic arithmetic expression. Supports +, -, *, /, parentheses…",
+      "input_schema": { "type": "object", "properties": { "expression": { "type": "string" }}}
+    },
+    {
+      "name": "getCurrentTime",
+      "description": "Get the current date and time in a given timezone…",
+      "input_schema": { ... }
+    },
+    {
+      "name": "searchKnowledge",
+      "description": "Search the user's local knowledge base for information relevant to a query…",
+      "input_schema": { ... }
+    }
+  ]
+}
 ```
 
 Adding a tool requires four files: a new `tools/*.ts`, an entry in `TOOLS`, a renderer in `apps/web/src/tools/toolkit.ts`, and an allowance in one or more `PROMPTS` entries.

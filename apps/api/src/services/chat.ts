@@ -20,6 +20,17 @@ export interface DrawThingsOpts {
   height?: number;
 }
 
+/**
+ * Models that emit tool calls as plaintext JSON rather than proper
+ * tool_use messages — drop tools for these to keep the chat clean.
+ * Empirically determined; revisit when Ollama or the upstream models
+ * improve their OpenAI-compat tool support.
+ */
+const NO_TOOLS_MODELS: ReadonlySet<string> = new Set([
+  "ollama/llama3.2:3b",
+  "ollama/llama3.2:1b",
+]);
+
 export interface RunChatInput {
   messages: UIMessage[];
   modelId: ModelId;
@@ -35,12 +46,22 @@ export interface RunChatInput {
 
 /**
  * Top-level chat dispatcher. Always returns a Response so the route
- * handler stays trivial. Branches on the model's provider:
+ * handler stays trivial. Branches on:
  *
- *  - drawthings → manual UI message stream wrapping a txt2img call
- *  - everything else → AI SDK streamText() with tools and multi-step
+ *  - prompt.workflow set    → run the named multi-agent workflow
+ *  - drawthings model       → manual UI stream around a txt2img call
+ *  - anything else          → AI SDK streamText() with tools + multi-step
  */
 export async function runChat(input: RunChatInput): Promise<Response> {
+  const prompt = resolvePrompt(input.promptId);
+  if (prompt.workflow === "tourist-brochure") {
+    // Lazy import keeps cold-start on non-workflow chats unchanged.
+    const { runTouristBrochureWorkflow } = await import(
+      "../workflows/tourist-brochure/index.js"
+    );
+    return runTouristBrochureWorkflow(input);
+  }
+
   const provider = input.modelId.split("/")[0];
   if (provider === "drawthings") return runImageChat(input);
   return runTextChat(input);
@@ -54,7 +75,14 @@ async function runTextChat({
 }: RunChatInput): Promise<Response> {
   const model = resolveModel(modelId);
   const prompt = resolvePrompt(promptId);
-  const tools = selectTools(prompt.tools);
+  // Per-model tool-call deny list. Some local models served via Ollama's
+  // OpenAI-compatible shim hallucinate JSON tool-call blobs as plaintext
+  // instead of emitting proper tool_use messages — for them we drop
+  // tools entirely. Models not on this list get the prompt's full
+  // tool allowlist and are expected to handle them.
+  const tools = NO_TOOLS_MODELS.has(modelId)
+    ? undefined
+    : selectTools(prompt.tools);
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({

@@ -70,6 +70,30 @@ paragraph, or short passage. Your job:
 Do not write new content from scratch. Do not write code, even if asked.
 If the user hasn't pasted anything to edit, ask them to.`,
   },
+  {
+    id: "image",
+    label: "Image generation",
+    description:
+      "Image generation mode. Pair with Draw Things — type a description, get an image.",
+    tools: [],
+    welcomeMessage:
+      "Image generation mode. Describe what you'd like to see and Draw Things will render it locally on your machine.",
+    // Ignored — Drawthings's runImageChat path doesn't use a system prompt.
+    system: "",
+  },
+  {
+    id: "brochure",
+    label: "Tourist brochure generator",
+    description:
+      "Multi-agent workflow: type a city, get a styled brochure (markdown + images + saved HTML).",
+    tools: [],
+    workflow: "tourist-brochure",
+    welcomeMessage:
+      "Welcome to the tourist brochure generator, please enter the name of a city you want to travel to.",
+    // The workflow ignores `system` — the chat service routes around
+    // streamText entirely. Kept for shape compatibility.
+    system: "Type the name of a city to generate a tourist brochure.",
+  },
 ];
 
 export const DEFAULT_PROMPT_ID: PromptId = "default";
@@ -81,10 +105,12 @@ export function resolvePrompt(id: string | undefined): PromptEntry {
 
 
 export function publicPrompts(): PromptDescriptor[] {
-  return PROMPTS.map(({ id, label, description, tools }) => ({
+  return PROMPTS.map(({ id, label, description, tools, workflow, welcomeMessage }) => ({
     id,
     label,
     description,
     tools,
+    ...(workflow ? { workflow } : {}),
+    ...(welcomeMessage ? { welcomeMessage } : {}),
   }));
 }
